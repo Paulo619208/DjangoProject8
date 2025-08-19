@@ -16,16 +16,19 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from jobs.views import job_list
-from jobs import views as job_views
+from jobs.views import home  # Main homepage for logged-in applicants
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('accounts/', include('accounts.urls', namespace='accounts')),
+    # Admin panel
+    path("admin/", admin.site.urls),
 
-    path('jobs/', include('jobs.urls', namespace='jobs')),
+    # Accounts app: login, logout, register
+    path("accounts/", include(("accounts.urls", "accounts"), namespace="accounts")),
 
-    path('', job_list, name='home'),
+    # Jobs app: CRUD, list, details
+    path("jobs/", include(("jobs.urls", "jobs"), namespace="jobs")),
 
-    path('', include('jobs.urls')),
+    # Home page → main landing page (shows jobs and applicant info)
+    path("", home, name="home"),
 ]
+

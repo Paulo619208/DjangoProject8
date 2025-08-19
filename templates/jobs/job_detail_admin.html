@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>{{ job.job_title }}</h2>
+    {% if job.location %}
+        <p><strong>Location:</strong> {{ job.location }}</p>
+    {% endif %}
+    <p>{{ job.job_description }}</p>
+    {% if job.min_offer %}
+        <p><strong>Salary:</strong> {{ job.min_offer }} - {{ job.max_offer }}</p>
+    {% endif %}
+    <small>Posted on {{ job.created_at|date:"M d, Y" }}</small>
+    <hr>
+
+    <h4>Applicants</h4>
+    {% if applicants %}
+        <table class="table table-bordered mt-2">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Resume</th>
+                    <th>Applied On</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for applicant in applicants %}
+                    <tr>
+                        <td>{{ applicant.user.username }}</td>
+                        <td>{{ applicant.user.email }}</td>
+                        <td>
+                            {% if applicant.resume %}
+                                <a href="{{ applicant.resume.url }}">Download</a>
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+                        <td>{{ applicant.created_at|date:"M d, Y H:i" }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No applicants yet.</p>
+    {% endif %}
+
+    <hr>
+    <a href="{% url 'jobs:job_update' job.pk %}" class="btn btn-primary">Edit</a>
+    <a href="{% url 'jobs:job_delete' job.pk %}" class="btn btn-danger">Delete</a>
+    <a href="{% url 'jobs:job_list' %}" class="btn btn-secondary">Back to Job Listings</a>
+</div>
+{% endblock %}

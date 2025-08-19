@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>{{ job.job_title }}</h2>
+    {% if job.location %}
+        <p><strong>Location:</strong> {{ job.location }}</p>
+    {% endif %}
+    <p>{{ job.job_description }}</p>
+    {% if job.min_offer %}
+        <p><strong>Salary:</strong> {{ job.min_offer }} - {{ job.max_offer }}</p>
+    {% endif %}
+    <small>Posted on {{ job.created_at|date:"M d, Y" }}</small>
+    <hr>
+
+    {% if already_applied %}
+        <div class="alert alert-info mt-3">
+            You have already applied for this job.
+        </div>
+    {% else %}
+        <h4 class="mt-4">Apply for this Job</h4>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-success">Submit Application</button>
+        </form>
+    {% endif %}
+
+    <a href="{% url 'jobs:home' %}" class="btn btn-secondary mt-4">Back to Job Listings</a>
+</div>
+{% endblock %}

@@ -3,17 +3,44 @@
 {% block content %}
 <h1 class="mb-4">Job Openings</h1>
 
-{% if jobs %}
-    <div class="list-group">
-        {% for job in jobs %}
-            <a href="#" class="list-group-item list-group-item-action">
-                <h5 class="mb-1">{{ job.title }}</h5>
-                <p class="mb-1">{{ job.description }}</p>
-                <small>Posted on {{ job.created_at }}</small>
-            </a>
-        {% endfor %}
+{# Show login message if user not authenticated #}
+{% if show_login_message or not request.user.is_authenticated %}
+    <div class="alert alert-warning">
+        You must
+        <a href="{% url 'accounts:login' %}?next={% url 'jobs:job_list' %}">log in</a>
+        to view available job openings.
     </div>
 {% else %}
-    <div class="alert alert-info">No job openings available.</div>
+
+    {# Admin-only: Create Job button #}
+    {% if request.user.admin %}
+        <a href="{% url 'jobs:job_create' %}" class="btn btn-success mb-3">Create Job</a>
+    {% endif %}
+
+    {% if jobs %}
+        <div class="list-group">
+            {% for job in jobs %}
+                <a href="{% url 'jobs:job_detail' job.pk %}" class="list-group-item list-group-item-action">
+                    <h5 class="mb-1">{{ job.job_title }}</h5>
+                    <p class="mb-1">{{ job.job_description|truncatewords:20 }}</p>
+                    <small>
+                        Location: {{ job.location }} |
+                        Offer: {{ job.min_offer }} - {{ job.max_offer }} |
+                        Posted on {{ job.created_at|date:"M d, Y" }}
+                    </small>
+
+                    {# Admin-only: applicant count badge #}
+                    {% if request.user.admin %}
+                        <span class="badge bg-primary float-end">
+                            {{ job.jobapplicant_set.count }} Applicants
+                        </span>
+                    {% endif %}
+                </a>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">No job openings available.</div>
+    {% endif %}
+
 {% endif %}
 {% endblock %}

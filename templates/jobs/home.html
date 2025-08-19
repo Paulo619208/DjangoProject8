@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Available Job Openings</h2>
+
+    {% if jobs %}
+        <div class="row">
+            {% for job in jobs %}
+                <div class="col-md-6 mb-4">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ job.job_title }}</h5>
+                            {% if job.location %}
+                                <h6 class="card-subtitle mb-2 text-muted">{{ job.location }}</h6>
+                            {% endif %}
+                            <p class="card-text">{{ job.job_description }}</p>
+                            {% if job.min_offer %}
+                                <p class="card-text"><strong>Salary:</strong> {{ job.min_offer }} - {{ job.max_offer }}</p>
+                            {% endif %}
+                            <a href="{% url 'jobs:job_detail' job.pk %}" class="btn btn-primary btn-sm">View Details</a>
+                        </div>
+                        <div class="card-footer text-muted">
+                            Posted on: {{ job.created_at|date:"M d, Y" }}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No jobs available at the moment.</p>
+    {% endif %}
+</div>
+{% endblock %}

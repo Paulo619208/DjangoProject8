@@ -1,12 +1,25 @@
 from django import forms
 from .models import User
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import get_user_model
 
 class RegisterForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput)
 
+class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'username', 'email', 'phone_number', 'password']
+        fields = ("username", "email", "first_name", "last_name")
+
+        labels = {
+            "username": "Username",
+            "email": "Email Address",
+        }
+
+        help_texts = {
+            "username": "Choose a unique username.",
+            "email": "Email must be from @objor.com domain",
+        }
 
     def clean_email(self):
         email = self.cleaned_data.get("email")

@@ -1,20 +1,31 @@
 from django.urls import path
 from .views import (
-    JobCreateView, job_list, job_detail,
-    JobUpdateView, JobDeleteView
+    home,          # Main homepage for applicants
+    job_list,      # List of jobs (admin view)
+    job_detail,    # Job detail
+    JobCreateView,
+    JobUpdateView,
+    JobDeleteView,
 )
-from . import views
 
 app_name = 'jobs'
 
 urlpatterns = [
-    path("", job_list, name="job_list"),
-    path("<int:pk>/", job_detail, name="job_detail"),
+    # Main homepage → /
+    path("", home, name="home"),
+
+    # Job list (admin) → /jobs/list/
+    path("list/", job_list, name="job_list"),
+
+    # Create job (CBV, admin only) → /jobs/create/
     path("create/", JobCreateView.as_view(), name="job_create"),
+
+    # Job detail → /jobs/<int:pk>/
+    path("<int:pk>/", job_detail, name="job_detail"),
+
+    # Update job (CBV, admin only) → /jobs/<int:pk>/update/
     path("<int:pk>/update/", JobUpdateView.as_view(), name="job_update"),
+
+    # Delete job (CBV, admin only) → /jobs/<int:pk>/delete/
     path("<int:pk>/delete/", JobDeleteView.as_view(), name="job_delete"),
-
-    path('', views.job_list, name='home'),
-
-    path('', views.job_list, name='job_list'),
 ]
